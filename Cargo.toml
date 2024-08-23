@@ -1,0 +1,11 @@
+[package]
+name = "route_match"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+route_match_macros = { path = "route_match_macros" }
+
+[workspace]
+members = [ "examples/hyper_server","route_match_macros"]
+# default-members = ["route_match_macros"]
