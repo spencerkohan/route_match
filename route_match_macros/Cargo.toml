@@ -1,10 +1,13 @@
 [package]
 name = "route_match_macros"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Spencer Kohan <spencerkohan@gmail.com>"]
 description = "The route_match macro implementation"
 license = "Apache-2.0"
+
+repository = "https://github.com/spencerkohan/route_match/tree/main/route_match_macro"
+documentation = "https://docs.rs/route_match_macros"
 
 [lib]
 proc-macro = true

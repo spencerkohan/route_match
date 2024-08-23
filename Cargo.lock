@@ -412,14 +412,25 @@ dependencies = [
 
 [[package]]
 name = "route_match"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
- "route_match_macros",
+ "route_match_macros 0.1.0",
 ]
 
 [[package]]
 name = "route_match_macros"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e340adfc2527cd2ecd3d9cf57c13d57c6cd09ddc2ed32ac381371af375b2b05"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "route_match_macros"
+version = "0.2.0"
 dependencies = [
  "proc-macro2",
  "quote",
