@@ -7,8 +7,11 @@ description = "A context-agnostic http routing utility"
 license = "Apache-2.0"
 
 [dependencies]
-route_match_macros = { path = "route_match_macros" }
+route_match_macros = "0.1.0"
 
 [workspace]
 members = [ "examples/hyper_server","route_match_macros"]
 default-members = ["route_match_macros"]
+
+[patch.crates-io]
+route_match_macros = { path = "route_match_macros" }
