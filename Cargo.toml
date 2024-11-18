@@ -10,11 +10,11 @@ repository = "https://github.com/spencerkohan/route_match"
 documentation = "https://docs.rs/route_match"
 
 [dependencies]
-route_match_macros = "0.1.0"
+route_match_macros = "0.2.0"
 
 [workspace]
-members = [ "examples/hyper_server","route_match_macros"]
-default-members = ["route_match_macros"]
+members = [ ".", "examples/hyper_server","route_match_macros"]
+default-members = [".", "route_match_macros"]
 
 [patch.crates-io]
 route_match_macros = { path = "route_match_macros" }

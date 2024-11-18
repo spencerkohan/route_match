@@ -49,6 +49,7 @@ fn test_path_args() {
         route! {
             match (&method, &path) {
                 GET /foo/bar => "static".to_string(),
+                GET /foo/:arg1/bar/:arg2 => format!("{}:{}", arg1, arg2),
                 GET /foo/:arg => arg.to_string(),
                 _ => "none".to_string(),
             }
@@ -57,5 +58,6 @@ fn test_path_args() {
 
     assert_eq!(&route("GET", "/foo/bar"), "static");
     assert_eq!(&route("GET", "/foo/baz"), "baz");
+    assert_eq!(&route("GET", "/foo/foo/bar/bar"), "foo:bar");
     assert_eq!(&route("GET", "/baz"), "none");
 }

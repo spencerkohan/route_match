@@ -59,12 +59,12 @@ impl Route {
             else {
                 // Otherwise we assign the args and return them
                 #arg_assignments
-                Some(#args)
+                Some((#args))
             }
         };
 
         quote_spanned! { self.span() =>
-            if let Some(#args) = {
+            if let Some((#args)) = {
                 #method_condition
                 #path_conditions
             } {
