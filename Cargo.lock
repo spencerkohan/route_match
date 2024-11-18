@@ -412,14 +412,14 @@ dependencies = [
 
 [[package]]
 name = "route_match"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "route_match_macros",
 ]
 
 [[package]]
 name = "route_match_macros"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "proc-macro2",
  "quote",
