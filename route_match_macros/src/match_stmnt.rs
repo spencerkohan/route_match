@@ -148,6 +148,7 @@ impl MatchStmnt {
             .collect();
 
         quote! {
+            #[allow(unused_parens)]
             {
                 #method_and_path
                 #(#conditionals)else*
