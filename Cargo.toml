@@ -11,7 +11,7 @@ repository = "https://github.com/spencerkohan/route_match"
 documentation = "https://docs.rs/route_match"
 
 [dependencies]
-route_match_macros = "0.2.1"
+route_match_macros = "0.2.2"
 
 [workspace]
 members = [ ".", "examples/hyper_server","route_match_macros"]
