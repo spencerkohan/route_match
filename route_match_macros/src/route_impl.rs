@@ -2,6 +2,7 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream;
 use syn::parse::discouraged::Speculative;
 use syn::parse::Parse;
+use syn::spanned::Spanned;
 use syn::Ident;
 use syn::Token;
 
@@ -23,6 +24,7 @@ pub enum PathComponent {
     Ident(Ident),
     Param(Ident),
     Wildcard(Span),
+    Rest(Span, Option<Ident>),
 }
 
 impl Parse for PathComponent {
@@ -32,9 +34,23 @@ impl Parse for PathComponent {
             let _: Token![:] = input.parse()?;
             let name: Ident = input.parse()?;
             Ok(PathComponent::Param(name))
+        } else if input.peek(Token![..]) {
+            eprintln!("parsing rest...");
+            let elipsis: Token![..] = input.parse()?;
+            if input.peek(Token![:]) {
+                let _: Token![:] = input.parse()?;
+                let name: Ident = input.parse()?;
+                let span = elipsis.span();
+                eprintln!("got name: {:?}", name);
+                Ok(PathComponent::Rest(span, Some(name)))
+            } else {
+                eprintln!("got no name");
+                let span = elipsis.span();
+                Ok(PathComponent::Rest(span, None))
+            }
         } else if input.peek(Token![*]) {
-            let token: Token![*] = input.parse()?;
-            Ok(PathComponent::Wildcard(token.span))
+            let token: Token![:] = input.parse()?;
+            Ok(PathComponent::Wildcard(token.span()))
         } else {
             let name: Ident = input.parse()?;
             Ok(PathComponent::Ident(name))
@@ -55,10 +71,15 @@ impl Parse for Path {
             if input.peek(Token![=>]) {
                 break;
             }
-            if input.peek(Token![*]) {
+            if input.peek(Token![..]) {
                 components.push(input.parse()?);
+                eprintln!("got elipsis");
                 if input.peek(Token![=>]) {
+                    eprintln!("end");
                     break;
+                } else {
+                    // A "rest" token should always be the final one
+                    let _: Token![=>] = input.parse()?;
                 }
             }
             let _: Token![/] = input.parse()?;
@@ -91,6 +112,7 @@ impl PathComponent {
             PathComponent::Ident(ident) => ident.span(),
             PathComponent::Param(param) => param.span(),
             PathComponent::Wildcard(span) => span.clone(),
+            PathComponent::Rest(span, _) => span.clone(),
         }
     }
 }

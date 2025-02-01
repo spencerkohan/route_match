@@ -74,8 +74,14 @@ impl Route {
     }
 
     fn match_conditions(&self) -> TokenStream {
-        if self.has_wildcard() {
-            quote! {}
+        if self.has_indeterminate_length() {
+            let static_conditions = self.static_conditions();
+            quote_spanned! { self.path.span() =>
+                else if #static_conditions {
+                    // If any of the satic conditions don't match, return None
+                    None
+                }
+            }
         } else {
             let static_conditions = self.static_conditions();
             let count = self.path.components.len();
@@ -91,9 +97,11 @@ impl Route {
         }
     }
 
-    fn has_wildcard(&self) -> bool {
+    fn has_indeterminate_length(&self) -> bool {
         return (&self).path.components.iter().fold(false, |acc, cmp| {
             if let PathComponent::Wildcard(_) = cmp {
+                true
+            } else if let PathComponent::Rest(_, _) = cmp {
                 true
             } else {
                 acc
@@ -108,6 +116,8 @@ impl Route {
             .iter()
             .filter_map(|component| {
                 if let PathComponent::Param(param) = component {
+                    Some(param.clone())
+                } else if let PathComponent::Rest(_, Some(param)) = component {
                     Some(param.clone())
                 } else {
                     None
@@ -137,6 +147,7 @@ impl Route {
                     });
                 }
                 PathComponent::Param(_) => {}
+                PathComponent::Rest(_, _) => {}
                 PathComponent::Wildcard(_) => {}
             }
         }
@@ -157,6 +168,26 @@ impl Route {
                         let #name = _path[#i];
                     });
                 }
+                PathComponent::Rest(_, Some(name)) => {
+                    let assignment = quote_spanned! { name.span() =>
+                        let mut byte_offset = 0;
+                        let mut segment_count = 0;
+
+                        for (idx, c) in _path_str.char_indices() {
+                            if c == '/' {
+                                if segment_count == #i {
+                                    byte_offset = idx + 1; // Skip past the '/'
+                                    break;
+                                }
+                                segment_count += 1;
+                            }
+                        }
+                        let #name = &_path_str[byte_offset..];
+                    };
+                    eprintln!("Added assignment: {}", assignment);
+                    assignments.push(assignment);
+                }
+                PathComponent::Rest(_, _) => {}
                 PathComponent::Wildcard(_) => {}
             }
         }

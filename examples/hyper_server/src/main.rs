@@ -32,6 +32,8 @@ async fn on_request(request: Request<hyper::body::Incoming>) -> Result<Response<
                     format!("{}", x * 2.0).as_str()
                 ).await
             },
+            GET /subpath/..:sub => serve_response(200, sub).await
+            GET /rest/.. => serve_response(200, "rest").await
             _ => serve_response(404, "not found").await
         }
     }

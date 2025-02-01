@@ -122,7 +122,7 @@ fn match_route(method: &str, path: &str) -> boolean {
         // Mathc any path starting with "/foo/bar"
         // Here "rest" will be bound as an &str containing everything
         // in the path following "/foo/bar"
-        GET /foo/bar/*:rest => println("rest: {}", rest),
+        GET /foo/bar/..:rest => println("rest: {}", rest),
         // Match any method/path combination at all
         _ => println!("default"),
       }
@@ -144,7 +144,6 @@ Here the `method` and `path` arguments can be any expression which has the type 
 
 `branches` expands to the following:
 
-
 > branches : <branch>, <branches>? | <branch>?
 > branch : <pattern> => *Expression*
 >
@@ -153,7 +152,9 @@ Here the `method` and `path` arguments can be any expression which has the type 
 > uri : <uri_components> | `"` <uri_components> `"` | `_`
 
 > uri_components : `/` <uri_component> <uri_components>? | `/` <uri_component>?
-> uri_component : IDENTIFIER | `:` IDENTIFIER
+> uri_component : IDENTIFIER | <named_var> | <rest_component>
+> named_var : `:` IDENTIFIER
+> rest_component : `..` <named_vat>?
 
 ## Runtime Specification
 
