@@ -245,7 +245,7 @@ dependencies = [
 
 [[package]]
 name = "hyper_server"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "http-body-util",
  "hyper",
@@ -412,14 +412,25 @@ dependencies = [
 
 [[package]]
 name = "route_match"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
- "route_match_macros",
+ "route_match_macros 0.2.2",
 ]
 
 [[package]]
 name = "route_match_macros"
 version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "19deab103eee8892c6c917b969d2598d5f33ef091e88c202e5212b549ccbe004"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "route_match_macros"
+version = "0.3.0"
 dependencies = [
  "proc-macro2",
  "quote",
