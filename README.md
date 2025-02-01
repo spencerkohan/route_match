@@ -117,8 +117,13 @@ fn match_route(method: &str, path: &str) -> boolean {
       match (method, path) {
         // Match any method, so long as the path matches "/foo"
         _ /foo => println!("Any /foo"),
+
+        // We can also match any method, and get it's value as a variable
+        :method /foo => println!("Method: {method} /foo"),
+
         // Match any request with the method "OPTIONS"
         OPTIONS _ => println!("OPTIONS"),
+
         // Mathc any path starting with "/foo/bar"
         // Here "rest" will be bound as an &str containing everything
         // in the path following "/foo/bar"
@@ -148,7 +153,7 @@ Here the `method` and `path` arguments can be any expression which has the type 
 > branch : <pattern> => *Expression*
 >
 > pattern : <method> <uri> | _
-> method : `GET` | `HEAD` | `POST` | `PUT` | `DELETE` | `CONNECT` | `OPTIONS` | `TRACE` | `PATCH` | `_`
+> method : `GET` | `HEAD` | `POST` | `PUT` | `DELETE` | `CONNECT` | `OPTIONS` | `TRACE` | `PATCH` | `_` | <named_var>
 > uri : <uri_components> | `"` <uri_components> `"` | `_`
 
 > uri_components : `/` <uri_component> <uri_components>? | `/` <uri_component>?

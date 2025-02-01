@@ -7,7 +7,8 @@ use syn::Token;
 #[derive(Debug)]
 pub enum Method {
     Any(Span),
-    Some(Ident),
+    Named(Ident),
+    Param(Ident),
 }
 
 impl Parse for Method {
@@ -15,9 +16,13 @@ impl Parse for Method {
         if input.peek(Token![_]) {
             let token: Token![_] = input.parse()?;
             return Ok(Method::Any(token.span()));
+        } else if input.peek(Token![:]) {
+            let _: Token![:] = input.parse()?;
+            let ident: Ident = input.parse()?;
+            return Ok(Method::Param(ident));
         }
         let ident: Ident = input.parse()?;
-        Ok(Method::Some(ident))
+        Ok(Method::Named(ident))
     }
 }
 
@@ -25,7 +30,8 @@ impl Method {
     pub fn span(&self) -> Span {
         match self {
             Self::Any(span) => span.clone(),
-            Self::Some(method) => method.span().clone(),
+            Self::Named(method) => method.span().clone(),
+            Self::Param(method) => method.span().clone(),
         }
     }
 }

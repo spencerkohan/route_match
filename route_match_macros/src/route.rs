@@ -42,7 +42,7 @@ impl Route {
         let method = &self.method;
         match method {
             Method::Any(_) => quote! {},
-            Method::Some(method) => {
+            Method::Named(method) => {
                 let method_str = LitStr::new(&method.to_string(), method.span());
                 let method_condition = quote_spanned! { method.span() =>
                     if _method != &#method_str {
@@ -52,6 +52,7 @@ impl Route {
                 };
                 method_condition
             }
+            Method::Param(_) => quote! {},
         }
     }
 
@@ -89,7 +90,8 @@ impl Route {
     fn match_conditions(&self) -> TokenStream {
         let leading_token = match self.method {
             Method::Any(_) => quote! {},
-            Method::Some(_) => quote! { else },
+            Method::Param(_) => quote! {},
+            Method::Named(_) => quote! { else },
         };
 
         if self.has_indeterminate_length() {
@@ -128,7 +130,7 @@ impl Route {
     }
 
     fn args(&self) -> TokenStream {
-        let args: Vec<Ident> = (&self)
+        let mut args: Vec<Ident> = (&self)
             .path
             .components
             .iter()
@@ -142,6 +144,10 @@ impl Route {
                 }
             })
             .collect();
+
+        if let Method::Param(param) = &self.method {
+            args.push(param.clone());
+        }
 
         if args.len() == 0 {
             return quote! {
@@ -208,6 +214,12 @@ impl Route {
                 PathComponent::Rest(_, _) => {}
                 PathComponent::Wildcard(_) => {}
             }
+        }
+
+        if let Method::Param(name) = &self.method {
+            assignments.push(quote! {
+                let #name = _method;
+            });
         }
 
         quote! {
