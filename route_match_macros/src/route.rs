@@ -9,19 +9,20 @@ use syn::Ident;
 use syn::LitStr;
 use syn::Token;
 
+use crate::method::Method;
 use crate::route_impl::Path;
 use crate::route_impl::PathComponent;
 
 #[derive(Debug)]
 pub struct Route {
-    pub method: Ident,
+    pub method: Method,
     pub path: Path,
     pub expr: Expr,
 }
 
 impl Parse for Route {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        let method: Ident = input.parse()?;
+        let method: Method = input.parse()?;
         let path: Path = input.parse()?;
         let _: Token![=>] = input.parse()?;
         let expr: Expr = input.parse()?;
@@ -37,10 +38,26 @@ impl Route {
             .unwrap_or(self.expr.span().clone())
     }
 
+    pub fn method_condition(&self) -> TokenStream {
+        let method = &self.method;
+        match method {
+            Method::Any(_) => quote! {},
+            Method::Some(method) => {
+                let method_str = LitStr::new(&method.to_string(), method.span());
+                let method_condition = quote_spanned! { method.span() =>
+                    if _method != &#method_str {
+                        // If the method doesn't match, return None
+                        None
+                    }
+                };
+                method_condition
+            }
+        }
+    }
+
     pub fn generate_conditional(&self) -> TokenStream {
         let args = self.args();
-        let method = &self.method;
-        let method_str = LitStr::new(&method.to_string(), method.span());
+
         let expr = &self.expr;
         let expr = quote_spanned! { expr.span() =>
             #expr
@@ -48,12 +65,8 @@ impl Route {
         let arg_assignments = self.arg_assignments();
         let match_conditions = self.match_conditions();
 
-        let method_condition = quote_spanned! { method.span() =>
-            if _method != &#method_str {
-                // If the method doesn't match, return None
-                None
-            }
-        };
+        let method_condition = self.method_condition();
+
         let path_conditions = quote_spanned! { self.path.span() =>
             #match_conditions
             else {
@@ -74,10 +87,15 @@ impl Route {
     }
 
     fn match_conditions(&self) -> TokenStream {
+        let leading_token = match self.method {
+            Method::Any(_) => quote! {},
+            Method::Some(_) => quote! { else },
+        };
+
         if self.has_indeterminate_length() {
             let static_conditions = self.static_conditions();
             quote_spanned! { self.path.span() =>
-                else if #static_conditions {
+                #leading_token if #static_conditions {
                     // If any of the satic conditions don't match, return None
                     None
                 }
@@ -86,7 +104,7 @@ impl Route {
             let static_conditions = self.static_conditions();
             let count = self.path.components.len();
             quote_spanned! { self.path.span() =>
-                else if _path.len() != #count {
+                #leading_token if _path.len() != #count {
                     // If the path comoponent doesn't match, return None
                     None
                 } else if #static_conditions {

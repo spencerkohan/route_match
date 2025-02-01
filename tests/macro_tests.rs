@@ -76,6 +76,24 @@ fn test_wildcard() {
 
     assert_eq!(&route("GET", "/foo/bar/baz"), "static");
     assert_eq!(&route("GET", "/bar/baz"), "baz");
-    // assert_eq!(&route("GET", "/foo/foo/bar/baz"), "foo/bar/baz");
-    // assert_eq!(&route("GET", "/baz"), "none");
+    assert_eq!(&route("GET", "/bar/foo/bar/baz"), "foo/bar/baz");
+    assert_eq!(&route("GET", "/baz"), "none");
+}
+
+#[test]
+fn test_any_method() {
+    fn route(method: &str, path: &str) -> String {
+        route! {
+            match (&method, &path) {
+                GET /foo => "GET".to_string(),
+                _ /foo => "any_method".to_string(),
+                _ => "none".to_string(),
+            }
+        }
+    }
+
+    assert_eq!(&route("GET", "/foo"), "GET");
+    assert_eq!(&route("POS", "/foo"), "any_method");
+    assert_eq!(&route("POST", "/bar/baz"), "none");
+    assert_eq!(&route("GET", "/baz"), "none");
 }

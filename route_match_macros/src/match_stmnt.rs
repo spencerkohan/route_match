@@ -57,14 +57,18 @@ pub enum MatchArm {
 impl Parse for MatchArm {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         if input.peek(Token![_]) {
-            // parse Default arm
-            let _: Token![_] = input.parse()?;
-            let _: Token![=>] = input.parse()?;
-            let expr: Expr = input.parse()?;
-            if input.peek(Token![,]) {
-                let _: Token![,] = input.parse()?;
+            let forked_input = input.fork();
+            let _: Token![_] = forked_input.parse()?;
+            if forked_input.peek(Token![=>]) {
+                let _: Token![_] = input.parse()?;
+                let _: Token![=>] = input.parse()?;
+                let expr: Expr = input.parse()?;
+                if input.peek(Token![,]) {
+                    let _: Token![,] = input.parse()?;
+                }
+                return Ok(Self::Default(expr));
             }
-            return Ok(Self::Default(expr));
+            // parse Default arm
         }
         let route: Route = input.parse()?;
         if input.peek(Token![,]) {
