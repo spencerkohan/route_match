@@ -1,6 +1,6 @@
 [package]
 name = "route_match"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 authors = ["Spencer Kohan <spencerkohan@gmail.com>"]
 description = "A context-agnostic http routing utility"
