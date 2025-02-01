@@ -60,6 +60,7 @@ impl Parse for MatchArm {
             let forked_input = input.fork();
             let _: Token![_] = forked_input.parse()?;
             if forked_input.peek(Token![=>]) {
+                // parse Default arm
                 let _: Token![_] = input.parse()?;
                 let _: Token![=>] = input.parse()?;
                 let expr: Expr = input.parse()?;
@@ -68,7 +69,6 @@ impl Parse for MatchArm {
                 }
                 return Ok(Self::Default(expr));
             }
-            // parse Default arm
         }
         let route: Route = input.parse()?;
         if input.peek(Token![,]) {

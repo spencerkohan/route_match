@@ -98,3 +98,23 @@ fn test_any_method() {
     assert_eq!(&route("POST", "/bar"), "POST");
     assert_eq!(&route("GET", "/baz"), "none");
 }
+
+#[test]
+fn test_any_path() {
+    fn route(method: &str, path: &str) -> String {
+        route! {
+            match (&method, &path) {
+                GET /foo => "GET".to_string(),
+                _ /foo => "any_method".to_string(),
+                POST _ => "POST_any".to_string(),
+                :method _ => method.to_string(),
+                _ => "none".to_string(),
+            }
+        }
+    }
+
+    assert_eq!(&route("GET", "/foo"), "GET");
+    assert_eq!(&route("POS", "/foo"), "any_method");
+    assert_eq!(&route("POST", "/bar"), "POST_any");
+    assert_eq!(&route("PATCH", "/bar"), "PATCH");
+}

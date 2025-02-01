@@ -10,8 +10,8 @@ use syn::LitStr;
 use syn::Token;
 
 use crate::method::Method;
-use crate::route_impl::Path;
-use crate::route_impl::PathComponent;
+use crate::path::Path;
+use crate::path::PathComponent;
 
 #[derive(Debug)]
 pub struct Route {
@@ -68,19 +68,31 @@ impl Route {
 
         let method_condition = self.method_condition();
 
+        let arg_clause = quote_spanned! { self.path.span() =>
+            #arg_assignments
+            Some((#args))
+        };
+
         let path_conditions = quote_spanned! { self.path.span() =>
             #match_conditions
             else {
                 // Otherwise we assign the args and return them
-                #arg_assignments
-                Some((#args))
+                #arg_clause
+            }
+        };
+
+        let condition = if !self.requires_method_match() && self.matches_any_path() {
+            arg_clause
+        } else {
+            quote_spanned! { self.span() =>
+                #method_condition
+                #path_conditions
             }
         };
 
         quote_spanned! { self.span() =>
             if let Some((#args)) = {
-                #method_condition
-                #path_conditions
+                #condition
             } {
                 #expr
             }
@@ -94,7 +106,9 @@ impl Route {
             Method::Named(_) => quote! { else },
         };
 
-        if self.has_indeterminate_length() {
+        if self.matches_any_path() {
+            return quote! {};
+        } else if self.has_indeterminate_length() {
             let static_conditions = self.static_conditions();
             quote_spanned! { self.path.span() =>
                 #leading_token if #static_conditions {
@@ -123,10 +137,29 @@ impl Route {
                 true
             } else if let PathComponent::Rest(_, _) = cmp {
                 true
+            } else if let PathComponent::Any(_) = cmp {
+                true
             } else {
                 acc
             }
         });
+    }
+
+    fn matches_any_path(&self) -> bool {
+        return (&self).path.components.iter().fold(false, |acc, cmp| {
+            if let PathComponent::Any(_) = cmp {
+                true
+            } else {
+                acc
+            }
+        });
+    }
+
+    fn requires_method_match(&self) -> bool {
+        if let Method::Named(_) = &self.method {
+            return true;
+        }
+        false
     }
 
     fn args(&self) -> TokenStream {
@@ -173,6 +206,7 @@ impl Route {
                 PathComponent::Param(_) => {}
                 PathComponent::Rest(_, _) => {}
                 PathComponent::Wildcard(_) => {}
+                PathComponent::Any(_) => {}
             }
         }
 
@@ -208,11 +242,11 @@ impl Route {
                         }
                         let #name = &_path_str[byte_offset..];
                     };
-                    eprintln!("Added assignment: {}", assignment);
                     assignments.push(assignment);
                 }
                 PathComponent::Rest(_, _) => {}
                 PathComponent::Wildcard(_) => {}
+                PathComponent::Any(_) => {}
             }
         }
 
