@@ -2,6 +2,8 @@ use std::{path::PathBuf, str::FromStr};
 
 use clap::{Parser, ValueEnum};
 
+pub mod utils;
+
 pub mod merge;
 
 #[derive(Parser, Debug, Clone)]
@@ -51,6 +53,10 @@ pub struct MergeArgs {
     /// Enable verbose logging output
     #[arg(long = "verbose", short = 'V', action)]
     pub verbose: bool,
+
+    /// Output OpenAI spec v2
+    #[arg(long = "v2", action)]
+    pub use_version_2: bool,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum)]

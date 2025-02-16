@@ -4,12 +4,12 @@ use std::{collections::BTreeMap, path::PathBuf};
 
 use merge_impl::merge_impl;
 use openapiv3::{
-    ExternalDocumentation, IndexMap, Info, PathItem, Paths, SecurityRequirement, Server, Tag,
+    ExternalDocumentation, IndexMap, Info, PathItem, Paths, SecurityRequirement, Server, Tag, v2,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::{Encoding, MergeArgs};
+use crate::{Encoding, MergeArgs, utils::to_v2};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SourceMap {
@@ -32,6 +32,22 @@ pub struct SourceMap {
 pub fn exec(args: MergeArgs) -> Option<String> {
     let map = SourceMap::from(&args);
     let spec = merge_impl(&args, map);
+
+    if args.use_version_2 {
+        let spec = to_v2(spec);
+        let spec_content = match &args.output_format {
+            Some(Encoding::Yaml) => serde_yaml::to_string(&spec).unwrap(),
+            Some(Encoding::Yml) => serde_json::to_string(&spec).unwrap(),
+            _ => serde_json::to_string_pretty(&spec).unwrap(),
+        };
+
+        if let Some(path) = &args.output {
+            std::fs::write(path, spec_content).unwrap();
+            return None;
+        }
+
+        return Some(spec_content);
+    }
 
     let spec_content = match &args.output_format {
         Some(Encoding::Yaml) => serde_yaml::to_string(&spec).unwrap(),
