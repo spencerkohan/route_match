@@ -35,6 +35,11 @@ pub fn get_spec(args: &MergeArgs, source: &PathBuf, overrides: &Option<PathItem>
 
 pub fn get_source_spec(args: &MergeArgs, source: &PathBuf) -> OpenAPI {
     let path = args.relative_path(&source);
+
+    if args.verbose {
+        eprintln!("getting source spec at path: {:?}", path);
+    }
+
     let source_content = std::fs::read_to_string(&path).unwrap();
     let spec: OpenAPI = match source.extension().and_then(|ext| ext.to_str()) {
         Some("json") => serde_json::from_str(&source_content).unwrap(),
