@@ -89,28 +89,36 @@ pub fn merge_path_item(item: &mut PathItem, overrides: &PathItem) {
         item.description = Some(description.clone());
     }
     if let Some(get) = &overrides.get {
-        item.get = Some(get.clone());
+        let get = get.clone();
+        item.get = Some(get);
     }
     if let Some(put) = &overrides.put {
-        item.put = Some(put.clone());
+        let put = put.clone();
+        item.put = Some(put);
     }
     if let Some(post) = &overrides.post {
-        item.post = Some(post.clone());
+        let post = post.clone();
+        item.post = Some(post);
     }
     if let Some(delete) = &overrides.delete {
-        item.delete = Some(delete.clone());
+        let delete = delete.clone();
+        item.delete = Some(delete);
     }
     if let Some(options) = &overrides.options {
-        item.options = Some(options.clone());
+        let options = options.clone();
+        item.options = Some(options);
     }
     if let Some(head) = &overrides.head {
-        item.head = Some(head.clone());
+        let head = head.clone();
+        item.head = Some(head);
     }
     if let Some(patch) = &overrides.patch {
-        item.patch = Some(patch.clone());
+        let patch = patch.clone();
+        item.patch = Some(patch);
     }
     if let Some(trace) = &overrides.trace {
-        item.trace = Some(trace.clone());
+        let trace = trace.clone();
+        item.trace = Some(trace);
     }
     if !overrides.servers.is_empty() {
         item.servers = overrides.servers.clone();
@@ -118,7 +126,10 @@ pub fn merge_path_item(item: &mut PathItem, overrides: &PathItem) {
     if !overrides.parameters.is_empty() {
         item.parameters = overrides.parameters.clone();
     }
+
     if !overrides.extensions.is_empty() {
-        item.extensions = overrides.extensions.clone();
+        for (_, operation) in item.iter_mut() {
+            operation.extensions = overrides.extensions.clone();
+        }
     }
 }
