@@ -24,6 +24,7 @@ pub fn test_merge() {
         output: None,
         output_format: Some(Encoding::Yaml),
         working_directory: Some(working_dir.into()),
+        verbose: false,
     };
 
     let result = exec(args).unwrap();
