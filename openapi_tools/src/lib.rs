@@ -47,6 +47,10 @@ pub struct MergeArgs {
     /// Paths in the template will be resolved relative to this directory (defaults to cwd)
     #[arg(long = "working-dir", short = 'w')]
     pub working_directory: Option<PathBuf>,
+
+    /// Enable verbose logging output
+    #[arg(long = "verbose", short = 'V', action)]
+    pub verbose: bool,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum)]

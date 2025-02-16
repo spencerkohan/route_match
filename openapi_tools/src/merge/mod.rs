@@ -74,8 +74,16 @@ impl SourceMap {
             encoding = Some(encode);
         }
 
+        if args.verbose {
+            eprintln!("Source retrieved:\n{}", source);
+        }
+
         for var in &args.template_vars {
             source = source.replace(&format!("${{{}}}", &var.key), &var.value);
+        }
+
+        if args.verbose {
+            eprintln!("Tamplating complete:\n{}", source);
         }
 
         let map = match encoding {
