@@ -1,0 +1,16 @@
+openapi: "3.0.0"
+info:
+  title: Foo Service
+  version: "1.0.0"
+paths:
+  /bar:
+    get:
+      summary: "Bar Service"
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: "Bar Service"
+      responses:
+        "200":
+          description: OK

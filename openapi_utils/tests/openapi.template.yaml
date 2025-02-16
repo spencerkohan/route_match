@@ -1,0 +1,9 @@
+info:
+  title: FooBar Service
+  version: "1.0.0"
+sources:
+  ./foo.spec.yaml:
+    x-google-backend:
+      address: "${addr}"
+      protocol: h2
+  ./bar.spec.yaml:

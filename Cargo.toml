@@ -14,9 +14,10 @@ documentation = "https://docs.rs/route_match"
 route_match_macros = "0.3.1"
 
 [workspace]
-members = [ ".", "examples/hyper_server","route_match_macros"]
+members = [ ".", "examples/hyper_server", "openapi_utils","route_match_macros"]
 default-members = [".", "route_match_macros"]
 
 [patch.crates-io]
+openapi_utils = { path = "openapi_utils" }
 route_match_macros = { path = "route_match_macros" }
 route_match = { path = "." }
