@@ -13,7 +13,7 @@ repository = "https://github.com/spencerkohan/route_match"
 clap = { version = "4.5.29", features = ["derive"] }
 
 
-openapiv3-extended = { git = "https://github.com/spencerkohan/openapiv3.git", branch = "master", features = ["v2"] }
+openapiv3-extended-2 = { version = "6.0.0", features = ["v2"] }
 serde = { version = "1.0.188", features = ["derive"] }
 serde_json = "1.0.107"
 serde_yaml = "0.9.34"

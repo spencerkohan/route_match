@@ -434,16 +434,17 @@ name = "openapi_tools"
 version = "0.3.0"
 dependencies = [
  "clap",
- "openapiv3-extended",
+ "openapiv3-extended-2",
  "serde",
  "serde_json",
  "serde_yaml",
 ]
 
 [[package]]
-name = "openapiv3-extended"
+name = "openapiv3-extended-2"
 version = "6.0.0"
-source = "git+https://github.com/spencerkohan/openapiv3.git?branch=master#fc0beea5a498aea1f2cc596e51d163a44e460bbc"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bcd5c04f739d65f486baeb6c0a6a6e75f4d053f50eaf7cdee53053ef9e5b1829"
 dependencies = [
  "anyhow",
  "http",
