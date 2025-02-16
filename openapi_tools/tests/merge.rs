@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use openapi_utils::{Encoding, MergeArgs, TemplateVar, merge::exec};
+use openapi_tools::{Encoding, MergeArgs, TemplateVar, merge::exec};
 use openapiv3::OpenAPI;
 
 #[test]

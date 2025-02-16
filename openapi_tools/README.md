@@ -1,4 +1,4 @@
-# OpenAPI Utils
+# OpenAPI Tools
 
 A crate for working with OpenAI specifications.
 
@@ -13,7 +13,7 @@ This might be useful, for instance, if you have multiple services behind the sam
 ### Usage
 
 ```
-Usage: openapi_utils merge [OPTIONS]
+Usage: openapi_tools merge [OPTIONS]
 
 Options:
   -f, --file <FILE>
@@ -97,7 +97,7 @@ sources:
 Running this command:
 
 ```
-$ openapi_utils merge --file api-spec.template.yaml -F yaml
+$ openapi_tools merge --file api-spec.template.yaml -F yaml
 ```
 
 Will produce this result:

@@ -1,5 +1,5 @@
 use clap::Parser;
-use openapi_utils::{Args, Subcommand, merge};
+use openapi_tools::{Args, Subcommand, merge};
 
 fn main() {
     let args = Args::parse();
