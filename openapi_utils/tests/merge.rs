@@ -7,7 +7,7 @@ use openapiv3::OpenAPI;
 pub fn test_merge() {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let manifest_dir_path = Path::new(manifest_dir);
-    eprintln!("manifest_dir_path: {:?}", manifest_dir_path);
+    println!("manifest_dir_path: {:?}", manifest_dir_path);
 
     let working_dir = Path::new(manifest_dir).join("tests");
     let file_path = Path::new(manifest_dir).join("tests/openapi.template.yaml");

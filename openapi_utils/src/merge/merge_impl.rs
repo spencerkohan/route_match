@@ -22,8 +22,6 @@ pub fn merge_impl(args: &MergeArgs, map: SourceMap) -> OpenAPI {
 pub fn get_spec(args: &MergeArgs, source: &PathBuf, overrides: &Option<PathItem>) -> OpenAPI {
     let mut spec = get_source_spec(args, &source);
 
-    eprintln!("source: {:#?}", source);
-
     if let Some(overrides) = overrides {
         for (_, item) in spec.paths.iter_mut() {
             if let RefOr::Item(item) = item {
@@ -79,8 +77,6 @@ pub fn merge_source_map(spec: &mut OpenAPI, map: &SourceMap) {
 }
 
 pub fn merge_path_item(item: &mut PathItem, overrides: &PathItem) {
-    eprintln!("overrides: {:#?}", overrides);
-
     if let Some(summary) = &overrides.summary {
         item.summary = Some(summary.clone());
     }
