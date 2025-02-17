@@ -9,6 +9,7 @@ pub fn to_v2(spec: OpenAPI) -> v2::OpenAPI {
     result.paths = serde_json::from_str(&serde_json::to_string(&spec.paths).unwrap()).unwrap();
     result.security =
         serde_json::from_str(&serde_json::to_string(&spec.security).unwrap()).unwrap();
+    result.extensions = spec.extensions.clone();
 
     result
 }

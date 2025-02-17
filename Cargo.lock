@@ -431,7 +431,7 @@ checksum = "945462a4b81e43c4e3ba96bd7b49d834c6f61198356aa858733bc4acf3cbe62e"
 
 [[package]]
 name = "openapi_tools"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "clap",
  "openapiv3-extended-2",
@@ -442,9 +442,9 @@ dependencies = [
 
 [[package]]
 name = "openapiv3-extended-2"
-version = "6.0.0"
+version = "6.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bcd5c04f739d65f486baeb6c0a6a6e75f4d053f50eaf7cdee53053ef9e5b1829"
+checksum = "cec39eea38c90e862ea3e5342b27fed7cebde6845816a7a6ac348e10364ebc02"
 dependencies = [
  "anyhow",
  "http",
